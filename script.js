@@ -46,11 +46,18 @@ function addItemToStorage(item) {
   } else {
     itemsFromStorage = JSON.parse(localStorage.getItem('items'));
   }
-  // Add new item to array
-  itemsFromStorage.push(item);
 
-  // Convert to JSON string and set to local storage
-  localStorage.setItem('items', JSON.stringify(itemsFromStorage));
+  // Checks for duplicate items and returns if item already present
+  if (itemsFromStorage.includes(item)) {
+    console.log(itemsFromStorage);
+    return;
+  } else {
+    // Add new item to array
+    itemsFromStorage.push(item);
+
+    // Convert to JSON string and set to local storage
+    localStorage.setItem('items', JSON.stringify(itemsFromStorage));
+  }
 }
 
 function createButton(classes) {
