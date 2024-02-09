@@ -65,7 +65,6 @@ function addItemToStorage(item) {
 
   // Checks for duplicate items and returns if item already present
   if (itemsFromStorage.includes(item)) {
-    console.log(itemsFromStorage);
     return;
   } else {
     // Add new item to array
@@ -87,16 +86,35 @@ function getItemsFromStorage() {
   return itemsFromStorage;
 }
 
-function removeItem(e) {
+function onClickItem(e) {
   if (e.target.parentElement.classList.contains('remove-item')) {
-    if (confirm('Are you sure?')) {
-      e.target.parentElement.parentElement.remove();
-      checkUI();
-    }
+    removeItem(e.target.parentElement.parentElement);
   }
 }
 
-function clearItems(e) {
+function removeItem(item) {
+  if (confirm('Are you sure?')) {
+    // Remove item from DOM
+    item.remove();
+
+    // Remove item from storage
+    removeItemFromStorage(item.textContent);
+
+    checkUI();
+  }
+}
+
+function removeItemFromStorage(item) {
+  let itemsFromStorage = getItemsFromStorage();
+
+  // Filter out item to be removed
+  itemsFromStorage = itemsFromStorage.filter((i) => i !== item);
+
+  // Re-set to localStorage
+  localStorage.setItem('items', JSON.stringify(itemsFromStorage));
+}
+
+function clearItems() {
   while (itemList.firstChild) {
     itemList.removeChild(itemList.firstChild);
   }
@@ -110,7 +128,7 @@ function filterItems(e) {
   items.forEach((item) => {
     const itemName = item.firstChild.textContent.toLowerCase();
 
-    if (itemName.indexOf(text) != -1) {
+    if (itemName.indexOf(text) !== -1) {
       item.style.display = 'flex';
     } else {
       item.style.display = 'none';
@@ -134,7 +152,7 @@ function checkUI() {
 function init() {
   // Event Listeners
   itemForm.addEventListener('submit', onAddItemSubmit);
-  itemList.addEventListener('click', removeItem);
+  itemList.addEventListener('click', onClickItem);
   clearBtn.addEventListener('click', clearItems);
   itemFilter.addEventListener('input', filterItems);
   document.addEventListener('DOMContentLoaded', displayItems);
